@@ -1,7 +1,7 @@
 pipeline {
   agent any
   tools {
-    nodejs "NodeJS14"   // :point_left: if need Use the 
+    nodejs "NodeJS"   // :point_left: if need Use the 
 new Node.js 20 installation
   }
   stages {
