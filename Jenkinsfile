@@ -1,45 +1,42 @@
-
 pipeline {
-    agent any
-
-     tools {
-    nodejs "NodeJS14"   // :point_left: if need Use the new Node.js 20 installation
+  agent any
+  tools {
+    nodejs "NodeJS14"   // :point_left: if need Use the 
+new Node.js 20 installation
   }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url: 'https://github.com/Shaik123-hu/Trading-UI.git'
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install --omit=optional'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'npm test || echo "⚠️ No tests found or tests failed"'
-            }
-        }
-
-        stage('Build Application') {
-            steps {
-                withEnv(["CI=false"]) {
-                    sh 'npm run build'
-                }
-            }
+  stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/Shaik123-hu/Trading-
+UI.git', branch: 'master'
+      }
+    }
+    stage('Install') {
+      steps {
+        sh '''
+          npm cache clean --force
+          rm -rf node_modules package-lock.json
+          npm install --omit=optional
+        '''
+      }
+    }
+    stage('Test') {
+      steps {
+        sh 'npm test || echo ":warning: No tests found"'
+      }
+    }
+  stage('Build') {
+    steps {
+        withEnv(["CI=false"]) {
+            sh 'npm run build'
         }
     }
-
-    post {
-        success {
-            echo '✅ Node.js pipeline finished successfully.'
-        }
-        failure {
-            echo '❌ Node.js pipeline failed — check console output.'
-        }
-    }
+}
+  }
+  post {
+    success { echo ':white_check_mark: Node.js pipeline
+finished successfully.' }
+    failure { echo ':x: Node.js pipeline failed — check 
+console output.' }
+  }
 }
